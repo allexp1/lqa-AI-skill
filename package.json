@@ -1,0 +1,44 @@
+{
+  "name": "lqa-skill",
+  "version": "1.0.0",
+  "description": "An agent skill for Claude Code: MQM-based linguistic quality assurance (LQA) for Hebrew and country-specific English, with a mechanical checker for bidi, dashes, TTS, placeholders and glossary terms.",
+  "bin": {
+    "lqa-skill": "bin/install.js"
+  },
+  "type": "commonjs",
+  "engines": {
+    "node": ">=16.7.0"
+  },
+  "files": [
+    "bin/",
+    "lqa/",
+    "!**/__pycache__",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "agent-skill",
+    "skill",
+    "lqa",
+    "localization",
+    "translation-quality",
+    "mqm",
+    "proofreading",
+    "hebrew",
+    "rtl",
+    "tts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allexp1/lqa-AI-skill.git"
+  },
+  "homepage": "https://github.com/allexp1/lqa-AI-skill#readme",
+  "bugs": {
+    "url": "https://github.com/allexp1/lqa-AI-skill/issues"
+  },
+  "license": "MIT"
+}

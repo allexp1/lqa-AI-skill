@@ -12,8 +12,10 @@ The result is a verdict (PASS / FIX / FAIL, plus "needs native sign-off" for hig
 ## Install
 
 ```bash
-./install.sh          # runs the tests, then copies lqa/ to ~/.claude/skills/lqa
+npx lqa-skill         # copies the skill to ~/.claude/skills/lqa (--project, --dest DIR, --dry-run)
 ```
+
+From a clone: `./install.sh` runs the tests, then copies `lqa/` to `~/.claude/skills/lqa`.
 
 ## Use the checker on its own
 
@@ -24,7 +26,7 @@ python3 -I lqa/scripts/lqa_check.py he.txt --source en.txt --glossary lqa/glossa
 
 ## Develop
 
-`bash test.sh` runs the test suite. `lqa/references/research.md` has the sources behind the rules (MQM, ISO 5060, the Microsoft Hebrew style guide, the Academy of the Hebrew Language, Government of Canada and Australian style guidance, LLM-judge research).
+`bash test.sh` runs the test suite. To release: bump `version` in `package.json`, add a `CHANGELOG.md` entry, commit, then `bash scripts/publish.sh` (it logs in to npm itself if needed). `lqa/references/research.md` has the sources behind the rules (MQM, ISO 5060, the Microsoft Hebrew style guide, the Academy of the Hebrew Language, Government of Canada and Australian style guidance, LLM-judge research).
 
 ## Credits
 
