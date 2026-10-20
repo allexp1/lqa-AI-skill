@@ -1,0 +1,2 @@
+Hi {name}, your plan renews on 12/03 for $9.99.
+Open https://kixplo.com/plans to manage it. Kixplo keeps your progress.

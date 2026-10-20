@@ -1,0 +1,8 @@
+{
+  "keep": ["Kixplo"],
+  "terms": [
+    {"source": "worksheet", "target": "דף עבודה", "forbidden": ["וורקשיט"]},
+    {"source": "plan", "target": "תוכנית"}
+  ],
+  "forbidden": ["משתמש יקר"]
+}
