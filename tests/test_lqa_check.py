@@ -64,6 +64,12 @@ class HebrewWhatsApp(unittest.TestCase):
     def test_good_message_is_clean(self):
         self.assertEqual(self.good, [], f"false positives: {self.good}")
 
+    def test_detached_prefix_before_digit(self):
+        f = lqa_check.check("השיעור מתחיל ב 17:00 ונגמר ב-18:00", channel="whatsapp")
+        hits = [x for x in f if x["code"] == "MK-PREFIX-DETACHED"]
+        self.assertEqual(len(hits), 1, f)
+        self.assertEqual(hits[0]["text"], "ב 17:00")
+
     def test_gershayim_is_not_a_quote(self):
         out = lqa_check.check('צה"ל ו“מירכאות”', channel="app")
         self.assertNotIn("MK-QUOTE-MIX", codes(out))

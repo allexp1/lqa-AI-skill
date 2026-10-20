@@ -28,6 +28,7 @@ NUMBER = re.compile(r"\d+(?:[.,:/]\d+)*")
 EMOJI = re.compile("[\U0001F000-\U0001FAFF☀-➿⬀-⯿️‍]")
 DASHES = re.compile("[–—]")
 CURLY_DOUBLE = re.compile("[“”„]")
+DETACHED_PREFIX = re.compile(f"(?<![\\w־-])([{PREFIXES}]) (?=[0-9])")
 GLUED_PREFIX = re.compile(f"(?<![\\w])([{PREFIXES}]{{1,3}})(?=[0-9A-Za-z])")
 
 DEFAULT_MAX = {"whatsapp": 800}
@@ -190,6 +191,11 @@ def check(text, source=None, lang=None, channel="app", max_chars=None, glossary=
                 out.append(_find("MK-PREFIX-GLUE", "linguistic/punctuation", "minor", n, pos(m.start()),
                                  re.match(r"\S+", line[m.start():]).group(),
                                  "Hebrew prefix glued to a digit or Latin word.",
+                                 f"Join with a maqaf or hyphen: {m.group(1)}־… (WhatsApp house style: {m.group(1)}-…)."))
+            for m in DETACHED_PREFIX.finditer(line):
+                out.append(_find("MK-PREFIX-DETACHED", "linguistic/punctuation", "minor", n, pos(m.start()),
+                                 m.group(1) + " " + re.match(r"\S+", line[m.end():]).group(),
+                                 "Hebrew prefix separated from its number by a space.",
                                  f"Join with a maqaf or hyphen: {m.group(1)}־… (WhatsApp house style: {m.group(1)}-…)."))
             if has_heb and LATIN_LETTER.search(line):
                 sev = "major" if chat else "neutral"
