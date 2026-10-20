@@ -23,7 +23,7 @@ Run it on every non-English draft before delivery, including my own drafts, and 
 python3 -I <skill-dir>/scripts/lqa_check.py DRAFT.txt --channel whatsapp [--source SRC.txt] [--lang en-GB] [--glossary G.json]
 ```
 
-Use `-` to read from stdin. `--help` lists the flags (`--allow-emoji`, `--allow-dashes`, `--max-chars`, `--format json`, `--strict`). Read every finding and confirm or dismiss it. The script gives leads, not verdicts: `neutral` findings (`LG-REPEAT`, bidi in apps) need a look, and only you decide.
+Use `-` to read from stdin. `--help` lists the flags (`--allow-emoji`, `--max-chars`, `--format json`, `--strict`). Use `--channel tts` for narration and voice-agent scripts. Dashes are always a major error, in every channel, with no flag to turn that off: rewrite the sentence. Read every finding and confirm or dismiss it. The script gives leads, not verdicts: `neutral` findings (`LG-REPEAT`, bidi in apps) need a look, and only you decide.
 
 ## 3. Linguistic pass
 

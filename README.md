@@ -4,7 +4,7 @@ An agent skill for reviewing copy in Hebrew and in country-specific English (en-
 
 It works in two passes:
 
-1. **Mechanical:** `lqa/scripts/lqa_check.py` (Python 3, no dependencies) checks bidi, prefixes glued to digits, dashes, emoji, quotes, WhatsApp markers, length, ktiv spelling, calques, local English spelling, and placeholders, numbers, URLs and glossary terms against the source.
+1. **Mechanical:** `lqa/scripts/lqa_check.py` (Python 3, no dependencies) checks bidi, prefixes glued to digits, dashes (banned everywhere, since they break TTS), number ranges in TTS scripts, emoji, quotes, WhatsApp markers, length, ktiv spelling, calques, local English spelling, and placeholders, numbers, URLs and glossary terms against the source.
 2. **Linguistic:** an MQM-based review: accuracy, terminology, grammar, style, locale, audience, design. It uses Hebrew and English locale packs, a fix-test filter against over-flagging, and a re-read for sense after every fix.
 
 The result is a verdict (PASS / FIX / FAIL, plus "needs native sign-off" for high-visibility copy), a findings table, and the corrected text.

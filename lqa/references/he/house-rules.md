@@ -7,7 +7,7 @@ These override everything else in this folder. They come from real corrections: 
 1. **LQA every Hebrew draft before delivery, unasked,** and report the findings, not just the fixed text.
 2. **No Latin on a Hebrew line in chat copy** (WhatsApp, SMS). Bidi flips the line and copy/paste breaks. Translate or transliterate English terms; anything that must stay Latin (a URL, a product label) goes on its own line, with blank lines around it.
 3. **Deliver chat copy as a file or an artifact with a copy button,** never as a terminal code block (it forces LTR).
-4. **No em or en dashes. No emoji.** Use commas, full stops, or a new sentence.
+4. **No dashes anywhere, in any language or channel: no em dash —, no en dash –, no spaced hyphen ` - ` used as a dash.** TTS voices skip them, pause in the wrong place, or read them as "minus", and Hebrew has no em dash. Rewrite with a comma, a full stop, a new sentence or parentheses; write ranges as `3 עד 5` / `3 to 5`. A dash is a **major** error with no opt-out. Kept: a hyphen inside a word or after a prefix (`ל-100`, `אחד-עשר`) and a minus sign in math (`5 - 3`). **No emoji.**
 5. **Hyphen after a prefix before a number or a Latin word in chat copy:** `ל-100`, `ב-2026`. The Hebrew maqaf `־` is correct too (the Academy prefers it), but a plain hyphen survives every keyboard and app. Never glue (`ל100`).
 6. **WhatsApp `*bold*` markers paired on the same line.**
 7. **No decimals in chat messages** when a round number will do: the decimal point can shift visually.
@@ -23,7 +23,7 @@ These override everything else in this folder. They come from real corrections: 
 | Numbers 1–9 in running text | Spell out in words; digits with units | Prefer digits in body copy | (no binding rule found) | Chat, UI, math content: digits. Stories and narration: words. One choice per text, never mixed |
 | Instructions to the reader | Informal plural imperative (לחצו, בחרו); infinitive not for instructions | Impersonal infinitive (יש ללחוץ) | — | Follow the project's existing address form. Default: plural imperative for instructions, יש/אפשר + infinitive for general statements |
 | Button labels | Verbal noun (שמירה, הדפסה) | Imperative, ultra-short | — | Verbal noun |
-| Em dash — | Allowed for an isolated element | Not covered | Doesn't exist in Hebrew; use the en dash – with spaces; ranges with no spaces (1–12) | Chat copy: no dashes at all (rule 4). Other content: en dash with spaces, never an em dash |
+| Em dash — | Allowed for an isolated element | Not covered | Doesn't exist in Hebrew; use the en dash – with spaces; ranges with no spaces (1–12) | No dashes at all, anywhere (rule 4) |
 | Maqaf | Hyphen joins words, no spaces | Maqaf ־ between a prefix and a number/Latin word | Hebrew ־ preferred, keyboard hyphen accepted | Chat: hyphen (rule 5). Web and app: either, one per text |
 | Gender | Plural forms; in education "תלמידים ותלמידות"; slash forms (ה/) only as a last resort | Ask; neutral rewording for UX | (no binding rule) | Plural or neutral wording; full pairs in education copy where they read well; no slashes in kids' content |
 | Formal words | Avoid לעשות שימוש, כמו גם, כעת, ניתן (use להשתמש, וגם, עכשיו, אפשר) | Dugri register; avoid padding | — | Agree: everyday words |

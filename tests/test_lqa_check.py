@@ -95,12 +95,30 @@ class HebrewWhatsApp(unittest.TestCase):
         self.assertIn("LG-REPEAT", c)
         self.assertIn("LG-KTIV", c)
 
-    def test_allow_dashes_keeps_hebrew_em_dash_rule(self):
-        out = lqa_check.check("5 או יותר — למעלה", channel="web", allow_dashes=True)
-        self.assertEqual([(f["code"], f["category"]) for f in out],
-                         [("LG-EM-DASH", "linguistic/punctuation")])
-        out = lqa_check.check("5 או יותר – למעלה", channel="web", allow_dashes=True)
-        self.assertEqual(out, [])
+    def test_every_dash_is_major_everywhere(self):
+        for text in ["5 או יותר — למעלה", "5 או יותר – למעלה", "5 או יותר - למעלה", "Five or more — up"]:
+            for channel in ["web", "app", "tts", "whatsapp"]:
+                hits = [f for f in lqa_check.check(text, channel=channel) if f["code"] == "MK-DASH"]
+                self.assertEqual([f["severity"] for f in hits], ["major"], (text, channel))
+
+    def test_no_dash_opt_out(self):
+        with self.assertRaises(TypeError):
+            lqa_check.check("א — ב", allow_dashes=True)
+
+    def test_hyphen_inside_words_is_not_a_dash(self):
+        out = lqa_check.check("ברוכים הבאים ל-100 ימים של אחד-עשר", channel="tts")
+        self.assertNotIn("MK-DASH", codes(out))
+
+    def test_minus_sign_is_not_a_dash(self):
+        out = lqa_check.check("כמה זה 5 - 3? ו-(8 - 2) × 4", channel="tts")
+        self.assertNotIn("MK-DASH", codes(out))
+
+    def test_tts_flags_number_range(self):
+        out = lqa_check.check("קראו את עמודים 3-5 ואת 10–12", channel="tts")
+        hits = [f for f in out if f["code"] == "MK-TTS-RANGE"]
+        self.assertEqual([h["text"] for h in hits], ["3-5"])
+        self.assertEqual(hits[0]["severity"], "major")
+        self.assertNotIn("MK-TTS-RANGE", codes(lqa_check.check("עמודים 3-5", channel="web")))
 
     def test_bidi_mix_is_neutral_in_app(self):
         out = lqa_check.check("ברוכים הבאים ל-Kixplo", channel="app")

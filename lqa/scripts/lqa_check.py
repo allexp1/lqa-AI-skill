@@ -4,8 +4,8 @@ pass can spend its attention on meaning, grammar and naturalness.
 
 Usage:
   python3 lqa_check.py TARGET [--source SRC] [--lang he|en-US|en-GB|en-AU|en-NZ|en-CA|en-IE]
-                      [--channel whatsapp|sms|app|web|email|store] [--max-chars N]
-                      [--glossary glossary.json] [--allow-emoji] [--allow-dashes] [--format text|json] [--strict]
+                      [--channel whatsapp|sms|app|web|email|store|tts] [--max-chars N]
+                      [--glossary glossary.json] [--allow-emoji] [--format text|json] [--strict]
 
 TARGET and SRC are file paths, or "-" for stdin. Every finding carries an MQM
 category and a severity (critical / major / minor / neutral). The script never
@@ -26,7 +26,10 @@ PLACEHOLDER = re.compile(r"\{\{\s*[\w.]+\s*\}\}|\{[\w.]+\}|%\{\w+\}|%(?:\d+\$)?[
 URL = re.compile(r"https?://[^\s<>\"'״)]+")
 NUMBER = re.compile(r"\d+(?:[.,:/]\d+)*")
 EMOJI = re.compile("[\U0001F000-\U0001FAFF☀-➿⬀-⯿️‍]")
-DASHES = re.compile("[–—]")
+# Em dash, en dash, or a hyphen with spaces round it standing in for one.
+# A spaced hyphen between numbers or brackets is a minus sign, not a dash.
+DASHES = re.compile(r"[–—]|(?<![\d)]) -(?= )|(?<=[\d)]) -(?= (?![\d(]))")
+TTS_RANGE = re.compile(r"(?<![\w.])\d+-\d+(?![\w.])")
 CURLY_DOUBLE = re.compile("[“”„]")
 DETACHED_PREFIX = re.compile(f"(?<![\\w־-])([{PREFIXES}]) (?=[0-9])")
 GLUED_PREFIX = re.compile(f"(?<![\\w])([{PREFIXES}]{{1,3}})(?=[0-9A-Za-z])")
@@ -142,8 +145,7 @@ def _line_col(text, index):
     return line, col
 
 
-def check(text, source=None, lang=None, channel="app", max_chars=None, glossary=None, allow_emoji=False,
-          allow_dashes=False):
+def check(text, source=None, lang=None, channel="app", max_chars=None, glossary=None, allow_emoji=False):
     lang = lang or detect_lang(text)
     out = []
     lines = text.split("\n")
@@ -164,14 +166,17 @@ def check(text, source=None, lang=None, channel="app", max_chars=None, glossary=
             out.append(_find("MK-DOUBLE-SPACE", "linguistic/punctuation", "minor", n, pos(m.start(1)),
                              "", "Double space inside a line.", "Use one space."))
         for m in DASHES.finditer(line):
-            if not allow_dashes:
-                out.append(_find("MK-DASH", "style/organization", "minor", n, pos(m.start()), m.group(),
-                                 "House style: no em or en dashes.",
-                                 "Use a comma, a full stop, or a hyphen; for ranges write 'עד' / 'to'."))
-            elif m.group() == "\u2014" and (is_he or has_heb):
-                out.append(_find("LG-EM-DASH", "linguistic/punctuation", "minor", n, pos(m.start()), m.group(),
-                                 "Hebrew has no em dash (Academy of the Hebrew Language).",
-                                 "Use the en dash – with a space on each side; no spaces in a range (1–12)."))
+            out.append(_find("MK-DASH", "style/organization", "major", n, pos(m.start() + (m.group() == " -")),
+                             m.group().strip(),
+                             "No dashes, in any text: TTS voices skip them, pause wrongly or read them as "
+                             "'minus', and Hebrew has no em dash.",
+                             "Rewrite: a comma, a full stop, a new sentence, or parentheses; for a range write "
+                             "'עד' / 'to'."))
+        if channel == "tts":
+            for m in TTS_RANGE.finditer(line):
+                out.append(_find("MK-TTS-RANGE", "design/markup", "major", n, pos(m.start()), m.group(),
+                                 "A number range with a hyphen: TTS voices read it as 'minus' or as one number.",
+                                 "Write it out: 3 עד 5 / 3 to 5."))
         if not allow_emoji:
             for m in EMOJI.finditer(line):
                 if m.group() in ("️", "‍"):
@@ -358,12 +363,10 @@ def main(argv=None):
     p.add_argument("target")
     p.add_argument("--source")
     p.add_argument("--lang")
-    p.add_argument("--channel", default="app", choices=["whatsapp", "sms", "app", "web", "email", "store"])
+    p.add_argument("--channel", default="app", choices=["whatsapp", "sms", "app", "web", "email", "store", "tts"])
     p.add_argument("--max-chars", type=int)
     p.add_argument("--glossary")
     p.add_argument("--allow-emoji", action="store_true")
-    p.add_argument("--allow-dashes", action="store_true",
-                   help="drop the house no-dash rule (an em dash in Hebrew is still flagged)")
     p.add_argument("--format", default="text", choices=["text", "json"])
     p.add_argument("--strict", action="store_true")
     a = p.parse_args(argv)
@@ -372,7 +375,7 @@ def main(argv=None):
     source = _read(a.source) if a.source else None
     glossary = json.loads(_read(a.glossary)) if a.glossary else None
     lang = a.lang or detect_lang(text)
-    findings = check(text, source, lang, a.channel, a.max_chars, glossary, a.allow_emoji, a.allow_dashes)
+    findings = check(text, source, lang, a.channel, a.max_chars, glossary, a.allow_emoji)
     counts = Counter(f["severity"] for f in findings)
     summary = {"lang": lang, "channel": a.channel, "chars": len(text.strip()), "words": len(text.split()),
                **{s: counts.get(s, 0) for s in ("critical", "major", "minor", "neutral")}}

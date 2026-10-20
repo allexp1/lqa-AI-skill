@@ -22,7 +22,7 @@ Read the whole text once for sense. Then go through these. Each item names the M
 - Gershayim before the last letter of an acronym (צה״ל, בי״ס); geresh after an abbreviation (עמ׳).
 - No comma before ו unless it joins two complete sentences. A period ends every sentence.
 - Quotation marks: one style; punctuation that isn't quoted goes outside.
-- Dashes: see house rules (none in chat; never an em dash in Hebrew).
+- Dashes: none, anywhere (house rule 4). In narration also check number ranges (`3-5` → `3 עד 5`) and anything else a voice reads aloud oddly.
 
 ## Style
 - **Register:** chosen once (dugri / business / formal) and held to the end. Dugri means short and direct, still with תודה.
